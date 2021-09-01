@@ -1,4 +1,5 @@
 import java.sql.*;
+import java.util.ArrayList;
 
 public class DbConnection {
 
@@ -55,9 +56,10 @@ public class DbConnection {
                                 "(hive_id INTEGER PRIMARY KEY AUTOINCREMENT," +
                                 "hive_status TEXT," +
                                 "hive_type TEXT," +
-                                "hive_notes TEXT )";
-//                                "location_id_for_hive INTEGER," +
+                                "hive_notes TEXT," +
+                                "location_id_for_hive INTEGER FOREIGN KEY REFERENCES locations(location_id))";
 //                                "FOREIGN KEY (location_id_for_hive) REFERENCES locations(location_id))";
+
                 statement.execute(sqlStatement);
 
 
@@ -85,22 +87,75 @@ public class DbConnection {
         }
     }
 
-//    CREATE METHOD CREATE HIVE
-    public void createHive (Hive hive){
-        try{
+    //    CREATE METHOD CREATE HIVE
+    public void createHive(Hive hive) {
+        try {
             sqlStatement = "INSERT INTO hives" +
                     " (hive_status, hive_type, hive_notes)" +
                     " VALUES (" +
-                    "'"+hive.getHiveStatus()+"'," +
-                    "'"+hive.getHiveType()+"'," +
-                    "'"+hive.getHiveNotes()+"')";
-//                    "'"+hive.getLocationIdForHive()+"'" +
+                    "'" + hive.getHiveStatus() + "'," +
+                    "'" + hive.getHiveType() + "'," +
+                    "'" + hive.getHiveNotes() + "'," +
+                    "'" + hive.getLocationIdForHive() + "')";
 
             statement.execute(sqlStatement);
 
-        }catch (SQLException exception){
+        } catch (SQLException exception) {
             System.out.println("Error inserting into hives table " + exception);
+        }
+
+    }
+
+    //    CREATE METHOD DELETE LOCATION
+    public void deleteLocation(Location location) {
+
+        try {
+
+            sqlStatement = "DELETE FROM locations WHERE location_name = '" + location.getLocationName() + "'";
+
+            statement.execute(sqlStatement);
+
+        } catch (SQLException exception) {
+            System.out.println("Error inserting into  locations table " + exception);
+        }
+    }
+
+    //    CREATE METHOD DELETE HIVE
+    public void deleteHive(Hive hive) {
+
+        try {
+
+            sqlStatement = "DELETE FROM hives WHERE hive_id = '" + hive.getHiveId() + "'";
+
+            statement.execute(sqlStatement);
+
+        } catch (SQLException exception) {
+            System.out.println("Error inserting into  locations table " + exception);
+        }
+    }
+    // PRINT OUT LOCATIONS
+
+//    public ArrayList<Location> printLocation() {
+//        ArrayList<Location> locationList = new ArrayList<Location>();
+
+    public void printLocation (Location location){
+        try {
+
+            sqlStatement = "SELECT location_name FROM locations";
+            ResultSet resultSet = statement.executeQuery(sqlStatement);
+
+            while (resultSet.next()) {
+                String locationName = resultSet.getString("location_name");
+                System.out.println(" Locations: " + locationName);
+
+
+            }
+        } catch (SQLException exception) {
+            System.out.println("Error inserting into  locations table " + exception);
+        }
+
     }
 
 }
-}
+
+

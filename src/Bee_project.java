@@ -46,21 +46,23 @@ public class Bee_project {
 
                     break;
                 case 4:
-
+printLocation1(location);
                     break;
                 case 5:
-//RUN METHOD ADD NEW LOCATION
+//RUN METHOD ADD NEW HIVE
                     addNewHive(scanner, hive);
                     break;
                 case 6:
-
+//RUN METHOD DELETE NEW HIVE
+                    deleteHive(scanner, hive);
                     break;
                 case 7:
                     //RUN METHOD ADD NEW LOCATION
                     addNewLocation(scanner, location);
                     break;
                 case 8:
-
+                    //RUN METHOD DELETE LOCATION
+                    deleteLocation(scanner, location);
                     break;
                 default:
                     System.out.println("This menu item does not exist");
@@ -75,11 +77,11 @@ public class Bee_project {
     // CREATE METHOD ADD NEW LOCATION
     public static void addNewLocation(Scanner scanner, Location location) {
         System.out.println("Please enter location name");
-        location.setLocationName(scanner.next());
+        location.setLocationName(scanner.nextLine());
         System.out.println("Please enter location address");
-        location.setLocationAddress(scanner.next());
+        location.setLocationAddress(scanner.nextLine());
         System.out.println("Please enter location note");
-        location.setLocationNote(scanner.next());
+        location.setLocationNote(scanner.nextLine());
 //        CREATE LOCATION
         dbConnection.createLocation(location);
 
@@ -89,14 +91,38 @@ public class Bee_project {
     public static void addNewHive(Scanner scanner, Hive hive) {
 
         System.out.println("Please enter hive status");
-        hive.setHiveStatus(scanner.next());
+        hive.setHiveStatus(scanner.nextLine());
         System.out.println("Please enter hive type");
-        hive.setHiveType(scanner.next());
+        hive.setHiveType(scanner.nextLine());
         System.out.println("Please enter  hive notes");
-        hive.setHiveNotes (scanner.next());
-//    System.out.println("Please choose location Id");
-//    hive.setLocationIdForHive(location.getLocationId());
+        hive.setHiveNotes(scanner.nextLine());
+        System.out.println("Please choose location Id");
+        hive.setLocationIdForHive(scanner.nextInt());
         dbConnection.createHive(hive);
+
+
+    }
+
+    // PRINT METHOD DELETE LOCATION
+
+    public static void printLocation1(Location location){
+        dbConnection.printLocation(location);
+    }
+
+    // CREATE METHOD DELETE LOCATION
+
+    public static void deleteLocation(Scanner scanner, Location location) {
+        System.out.println("Please enter location you want to delete");
+        location.setLocationName(scanner.next());
+        dbConnection.deleteLocation(location);
+
+    }
+
+    // CREATE METHOD DELETE HIVE
+    public static void deleteHive(Scanner scanner, Hive hive) {
+        System.out.println("Please enter hive id you want to delete");
+        hive.setHiveId(scanner.nextInt());
+        dbConnection.deleteHive(hive);
 
 
     }

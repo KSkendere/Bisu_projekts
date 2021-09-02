@@ -165,9 +165,7 @@ public class DbConnection {
 
         } catch (SQLException exception) {
             System.out.println("Error counting hives" + exception);
-
         }
-
     }
 
     //    TOTAL HONEY AND POLLEN (KG)
@@ -176,17 +174,55 @@ public class DbConnection {
             sqlStatement = "SELECT SUM (honey), SUM (pollen) FROM colonies";
             ResultSet resultSet = statement.executeQuery(sqlStatement);
 
-int honeySum = resultSet.getInt("SUM (honey)");
+            int honeySum = resultSet.getInt("SUM (honey)");
             int pollenSum = resultSet.getInt("SUM (pollen)");
-            System.out.println("There is " + honeySum + " kg of honey and there are "+ pollenSum+ " pollen frames in hives in total.");
+            System.out.println("There is " + honeySum + " kg of honey and there are " + pollenSum + " pollen frames in hives in total.");
 
         } catch (Exception exception) {
             System.out.println("Error in sum of honey " + exception);
         }
 
     }
-    //
+    //THREE STRONGEST COLONIES BY HONEY
 
+    public void strongestColoniesByHoney(Colony colony) {
+        try {
+            sqlStatement = "SELECT*FROM colonies ORDER BY honey DESC LIMIT 3";
+            ResultSet resultSet = statement.executeQuery(sqlStatement);
+            System.out.println("The strongest 3 hives by honey are: ");
+            while (resultSet.next()) {
+                int hiveID = resultSet.getInt("hive_id");
+                int kgHoney = resultSet.getInt("honey");
+
+                System.out.println("Hive nr. " + hiveID + " , where is " + kgHoney + " kg of honey");
+
+            }
+
+        } catch (Exception exception) {
+            System.out.println("Error in strongest colonies by honey " + exception);
+        }
+    }
+
+    //HOW MANY COLONIES AR TREATED WITH VARROA TREATMENT,SORT BY COUNT
+
+    public void varroaTreatmentCount (Colony colony) {
+
+        try{
+            sqlStatement = "SELECT COUNT(colony_id), varroa_treatment FROM colonies GROUP BY varroa_treatment  ORDER BY COUNT(colony_id) DESC";
+
+            ResultSet resultSet = statement.executeQuery(sqlStatement);
+
+            while (resultSet.next()){
+                int varCount = resultSet.getInt("Count(colony_id)");
+                String varroaTreatment = resultSet.getString("varroa_treatment");
+                System.out.println("There are " + varCount + " hives treated with treatment " + varroaTreatment);
+
+            }
+
+    }catch(Exception exception){
+            System.out.println("There is error in varroa treatment count: " + exception);
+        }
+    }
 }
 
 

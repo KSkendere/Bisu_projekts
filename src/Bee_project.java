@@ -10,14 +10,17 @@ public class Bee_project {
 
 
         dbConnection = new DbConnection();
-
+// CREATE OBJECT FROM CLASS COLONY
+        Colony colony = new Colony();
+// CREATE OBJECT FROM CLASS LOCATION
         Location location = new Location();
+// CREATE OBJECT FROM CLASS HIVE
         Hive hive = new Hive();
 //ADD SCANNER
         Scanner scanner = new Scanner(System.in);
 
 
-        // Creating a MENU
+// Creating a MENU
         int menu;
 
         do {
@@ -37,7 +40,8 @@ public class Bee_project {
 
             switch (menu) {
                 case 1:
-                    dbConnection.toString();
+                    countHive(hive);
+                    honeyAndPollenSum(colony);
                     break;
                 case 2:
 
@@ -46,7 +50,7 @@ public class Bee_project {
 
                     break;
                 case 4:
-printLocation1(location);
+
                     break;
                 case 5:
 //RUN METHOD ADD NEW HIVE
@@ -57,11 +61,13 @@ printLocation1(location);
                     deleteHive(scanner, hive);
                     break;
                 case 7:
-                    //RUN METHOD ADD NEW LOCATION
+//RUN METHOD ADD NEW LOCATION
                     addNewLocation(scanner, location);
                     break;
                 case 8:
-                    //RUN METHOD DELETE LOCATION
+//PRINT OUT ALL LOCATIONS
+                    printLocation1(location);
+//RUN METHOD DELETE LOCATION
                     deleteLocation(scanner, location);
                     break;
                 default:
@@ -77,11 +83,11 @@ printLocation1(location);
     // CREATE METHOD ADD NEW LOCATION
     public static void addNewLocation(Scanner scanner, Location location) {
         System.out.println("Please enter location name");
-        location.setLocationName(scanner.nextLine());
+        location.setLocationName(scanner.next());
         System.out.println("Please enter location address");
-        location.setLocationAddress(scanner.nextLine());
+        location.setLocationAddress(scanner.next());
         System.out.println("Please enter location note");
-        location.setLocationNote(scanner.nextLine());
+        location.setLocationNote(scanner.next());
 //        CREATE LOCATION
         dbConnection.createLocation(location);
 
@@ -91,13 +97,13 @@ printLocation1(location);
     public static void addNewHive(Scanner scanner, Hive hive) {
 
         System.out.println("Please enter hive status");
-        hive.setHiveStatus(scanner.nextLine());
+        hive.setHiveStatus(scanner.next());
         System.out.println("Please enter hive type");
-        hive.setHiveType(scanner.nextLine());
+        hive.setHiveType(scanner.next());
         System.out.println("Please enter  hive notes");
-        hive.setHiveNotes(scanner.nextLine());
-        System.out.println("Please choose location Id");
-        hive.setLocationIdForHive(scanner.nextInt());
+        hive.setHiveNotes(scanner.next());
+//        System.out.println("Please choose location Id");
+//        hive.setLocationIdForHive(scanner.nextInt());
         dbConnection.createHive(hive);
 
 
@@ -124,6 +130,13 @@ printLocation1(location);
         hive.setHiveId(scanner.nextInt());
         dbConnection.deleteHive(hive);
 
-
+    }
+    // COUNTING HIVES
+    public static void countHive (Hive hive){
+        dbConnection.countHives(hive);
+    }
+//    SUM OF HONEY AND POLLEN
+    public static void honeyAndPollenSum (Colony colony){
+        dbConnection.sumOfHoneyAndPollen(colony);
     }
 }

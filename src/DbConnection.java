@@ -56,8 +56,8 @@ public class DbConnection {
                                 "(hive_id INTEGER PRIMARY KEY AUTOINCREMENT," +
                                 "hive_status TEXT," +
                                 "hive_type TEXT," +
-                                "hive_notes TEXT," +
-                                "location_id_for_hive INTEGER FOREIGN KEY REFERENCES locations(location_id))";
+                                "hive_notes TEXT )";
+//                                "location_id_for_hive INTEGER FOREIGN KEY REFERENCES locations(location_id))";
 //                                "FOREIGN KEY (location_id_for_hive) REFERENCES locations(location_id))";
 
                 statement.execute(sqlStatement);
@@ -95,8 +95,8 @@ public class DbConnection {
                     " VALUES (" +
                     "'" + hive.getHiveStatus() + "'," +
                     "'" + hive.getHiveType() + "'," +
-                    "'" + hive.getHiveNotes() + "'," +
-                    "'" + hive.getLocationIdForHive() + "')";
+                    "'" + hive.getHiveNotes() + "')";
+//                    "'" + hive.getLocationIdForHive()+ "')"  ;
 
             statement.execute(sqlStatement);
 
@@ -138,23 +138,54 @@ public class DbConnection {
 //    public ArrayList<Location> printLocation() {
 //        ArrayList<Location> locationList = new ArrayList<Location>();
 
-    public void printLocation (Location location){
+    public void printLocation(Location location) {
         try {
-
             sqlStatement = "SELECT location_name FROM locations";
             ResultSet resultSet = statement.executeQuery(sqlStatement);
-
             while (resultSet.next()) {
                 String locationName = resultSet.getString("location_name");
                 System.out.println(" Locations: " + locationName);
-
-
             }
         } catch (SQLException exception) {
-            System.out.println("Error inserting into  locations table " + exception);
+            System.out.println("Error when printing locations " + exception);
         }
 
     }
+
+    //    HOW MANY HIVES THERE ARE
+    public void countHives(Hive hive) {
+        try {
+
+            sqlStatement = "SELECT COUNT (hive_id) FROM hives";
+            ResultSet resultSet = statement.executeQuery(sqlStatement);
+
+            int hiveCount = resultSet.getInt("COUNT (hive_id)");
+
+            System.out.println("There are " + hiveCount + " bee hives in total.");
+
+        } catch (SQLException exception) {
+            System.out.println("Error counting hives" + exception);
+
+        }
+
+    }
+
+    //    TOTAL HONEY AND POLLEN (KG)
+    public void sumOfHoneyAndPollen(Colony colony) {
+        try {
+            sqlStatement = "SELECT SUM (honey), SUM (pollen) FROM colonies";
+            ResultSet resultSet = statement.executeQuery(sqlStatement);
+
+int honeySum = resultSet.getInt("SUM (honey)");
+            int pollenSum = resultSet.getInt("SUM (pollen)");
+            System.out.println("There is " + honeySum + " kg of honey and there are "+ pollenSum+ " pollen frames in hives in total.");
+
+        } catch (Exception exception) {
+            System.out.println("Error in sum of honey " + exception);
+        }
+
+    }
+    //
 
 }
 

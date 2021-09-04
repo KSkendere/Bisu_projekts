@@ -1,4 +1,5 @@
     public class Colony {
+    private Integer id;
         private Integer hiveId;
         private String colonyOrigin;
         private String queenBreed;
@@ -13,13 +14,12 @@
         private Integer foodAdded;
         private Integer nextVisit;
 
-//    NO ARGUMENT CONSTRUCTOR
-
         public Colony() {
         }
 //    ARGUMENT CONSTRUCTOR
 
-        public Colony(Integer hiveId, String colonyOrigin, String queenBreed, String queenYear, Integer numberOfSupers, Integer numberOfFrames, Integer numberOfBees, Integer numberOfBrood, Integer kgHoney, Integer pollen, String varroaTreatment, Integer foodAdded, Integer nextVisit) {
+        public Colony(Integer id, Integer hiveId, String colonyOrigin, String queenBreed, String queenYear, Integer numberOfSupers, Integer numberOfFrames, Integer numberOfBees, Integer numberOfBrood, Integer kgHoney, Integer pollen, String varroaTreatment, Integer foodAdded, Integer nextVisit) {
+            this.id = id;
             this.hiveId = hiveId;
             this.colonyOrigin = colonyOrigin;
             this.queenBreed = queenBreed;
@@ -40,7 +40,8 @@
         @Override
         public String toString() {
             return "Colony{" +
-                    "hiveId=" + hiveId +
+                    "id=" + id +
+                    ", hiveId=" + hiveId +
                     ", colonyOrigin='" + colonyOrigin + '\'' +
                     ", queenBreed='" + queenBreed + '\'' +
                     ", queenYear='" + queenYear + '\'' +
@@ -55,7 +56,17 @@
                     ", nextVisit=" + nextVisit +
                     '}';
         }
+
 //    GETTERS & SETTERS
+
+
+        public Integer getId() {
+            return id;
+        }
+
+        public void setId(Integer id) {
+            this.id = id;
+        }
 
         public Integer getHiveId() {
             return hiveId;

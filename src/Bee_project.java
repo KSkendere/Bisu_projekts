@@ -44,13 +44,17 @@ public class Bee_project {
                     honeyAndPollenSum(colony);
                     break;
                 case 2:
-
+//RUN METHOD TO COUNT HIVES ARE IN EACH LOCATION
+                    hivesInLocations(hive, location);
+//RUN METHOD TO COUNT HONEY IN EACH LOCATION
+                    countHoneyInLocation(location, hive, colony);
                     break;
                 case 3:
 
                     break;
                 case 4:
-
+//PRINT INFORMATION ABOUT SELECTED COLONY
+                    printInfoAboutColony(scanner, colony);
                     break;
                 case 5:
 //RUN METHOD ADD NEW HIVE
@@ -96,14 +100,16 @@ public class Bee_project {
 
     public static void addNewHive(Scanner scanner, Hive hive) {
 
+        System.out.println("Please enter hive id");
+        hive.setHiveId(scanner.nextInt());
         System.out.println("Please enter hive status");
         hive.setHiveStatus(scanner.next());
         System.out.println("Please enter hive type");
         hive.setHiveType(scanner.next());
         System.out.println("Please enter  hive notes");
         hive.setHiveNotes(scanner.next());
-//        System.out.println("Please choose location Id");
-//        hive.setLocationIdForHive(scanner.nextInt());
+        System.out.println("Please enter location Id");
+        hive.setLocationId(scanner.nextInt());
         dbConnection.createHive(hive);
 
 
@@ -121,7 +127,6 @@ public class Bee_project {
         System.out.println("Please enter location you want to delete");
         location.setLocationName(scanner.next());
         dbConnection.deleteLocation(location);
-
     }
 
     // CREATE METHOD DELETE HIVE
@@ -129,7 +134,6 @@ public class Bee_project {
         System.out.println("Please enter hive id you want to delete");
         hive.setHiveId(scanner.nextInt());
         dbConnection.deleteHive(hive);
-
     }
     // COUNTING HIVES
     public static void countHive (Hive hive){
@@ -139,4 +143,22 @@ public class Bee_project {
     public static void honeyAndPollenSum (Colony colony){
         dbConnection.sumOfHoneyAndPollen(colony);
     }
+
+    //HOW MANY HIVES IN LOCATIONS
+    public static void hivesInLocations(Hive hive, Location location) {
+        dbConnection.hivesInLocations(hive, location);
+    }
+
+    //    COUNT HONEY IN LOCATIONS
+    public static void countHoneyInLocation(Location location, Hive hive, Colony colony) {
+        dbConnection.countHoneyInLocations(location, hive, colony);
+    }
+
+    // PRINT OUT INFORMATION ABOUT COLONIES
+    public static void printInfoAboutColony(Scanner scanner, Colony colony) {
+        System.out.println("Select hive id whose colony you want information about");
+        colony.setHiveId(scanner.nextInt());
+        dbConnection.coloniesInfo(colony);
+    }
 }
+

@@ -33,19 +33,17 @@ public class DbConnection {
                         "honey INTEGER NOT NULL, " +
                         "pollen INTEGER NOT NULL, " +
                         "varroa_treatment TEXT NOT NULL, " +
-                        "food_added TEXT NOT NULL, " +
+                        "food_added INTEGER NOT NULL, " +
                         "next_visit TEXT NOT NULL" +
                         ")";
                 statement.execute(sqlStatement);
 //                CREATE TABLE LOCATIONS
-
                 sqlStatement = "CREATE TABlE IF NOT EXISTS locations" +
                         "(location_id INTEGER PRIMARY KEY AUTOINCREMENT," +
                         "location_name TEXT," +
                         "location_address TEXT," +
                         "location_notes TEXT )";
                 statement.execute(sqlStatement);
-
 //                CREATE TABLE HIVES
                 sqlStatement =
                         "CREATE TABLE IF NOT EXISTS hives" +
@@ -55,26 +53,27 @@ public class DbConnection {
                                 "hive_type TEXT," +
                                 "hive_notes TEXT," +
                                 "location_id INTEGER )";
-
 //                "hive_notes TEXT )";
 //                                "location_id_for_hive INTEGER FOREIGN KEY REFERENCES locations(location_id))";
 //                                "FOREIGN KEY (location_id_for_hive) REFERENCES locations(location_id))";
 
                 statement.execute(sqlStatement);
             }
-
+            //        CREATE TABLE HISTORY
+            sqlStatement = "CREATE TABLE IF NOT EXISTS histories" +
+                    " (id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                    " action_done TEXT, " +
+                    " date_and_time TEXT, " +
+                    " unit TEXT )";
+            statement.execute(sqlStatement);
         } catch (SQLException exception) {
             System.out.println("Database error" + exception);
         }
     }
-
-
     //    CREATE METHOD CREATE LOCATION
 //
     public void createLocation(Location location) {
-
         try {
-
             sqlStatement = "INSERT INTO locations (location_name,location_address, location_notes) " +
                     "VALUES (" +
                     "'" + location.getLocationName() + "'," +
@@ -86,7 +85,6 @@ public class DbConnection {
             System.out.println("Error inserting into  locations table " + exception);
         }
     }
-
     //    CREATE METHOD CREATE HIVE
     public void createHive(Hive hive) {
         try {
@@ -110,11 +108,8 @@ public class DbConnection {
     public void deleteLocation(Location location) {
 
         try {
-
             sqlStatement = "DELETE FROM locations WHERE location_name = '" + location.getLocationName() + "'";
-
             statement.execute(sqlStatement);
-
         } catch (SQLException exception) {
             System.out.println("Error inserting into  locations table " + exception);
         }
@@ -122,21 +117,14 @@ public class DbConnection {
 
     //    CREATE METHOD DELETE HIVE
     public void deleteHive(Hive hive) {
-
         try {
-
             sqlStatement = "DELETE FROM hives WHERE hive_id = '" + hive.getHiveId() + "'";
-
             statement.execute(sqlStatement);
-
         } catch (SQLException exception) {
             System.out.println("Error inserting into  locations table " + exception);
         }
     }
     // PRINT OUT LOCATIONS
-
-//    public ArrayList<Location> printLocation() {
-//        ArrayList<Location> locationList = new ArrayList<Location>();
 
     public void printLocation(Location location) {
         try {
@@ -149,9 +137,7 @@ public class DbConnection {
         } catch (SQLException exception) {
             System.out.println("Error when printing locations " + exception);
         }
-
     }
-
     //    HOW MANY HIVES THERE ARE
     public void countHives(Hive hive) {
         try {
@@ -167,7 +153,6 @@ public class DbConnection {
             System.out.println("Error counting hives" + exception);
         }
     }
-
     //    TOTAL HONEY AND POLLEN (KG)
     public void sumOfHoneyAndPollen(Colony colony) {
         try {
@@ -184,17 +169,22 @@ public class DbConnection {
 
     }
     //THREE STRONGEST COLONIES BY HONEY
-
-    public void strongestColoniesByHoney(Colony colony) {
+    public void strongestColoniesByHoney(Colony colony, Hive hive, Location location) {
         try {
-            sqlStatement = "SELECT*FROM colonies ORDER BY honey DESC LIMIT 3";
+            sqlStatement = "SELECT*FROM colonies " +
+                    " JOIN hives" +
+                    " ON colonies.hive_id=hives.hive_id" +
+                    " JOIN locations" +
+                    " ON hives.location_id = locations.location_id " +
+                    " ORDER BY honey DESC LIMIT 3";
             ResultSet resultSet = statement.executeQuery(sqlStatement);
             System.out.println("The strongest 3 hives by honey are: ");
             while (resultSet.next()) {
                 int hiveID = resultSet.getInt("hive_id");
                 int kgHoney = resultSet.getInt("honey");
+                String locationName = resultSet.getString("location_name");
 
-                System.out.println("Hive nr. " + hiveID + " , where is " + kgHoney + " kg of honey");
+                System.out.println("Hive nr. " + hiveID + " , where is " + kgHoney + " kg of honey (location: " + locationName + ")");
 
             }
 
@@ -202,20 +192,17 @@ public class DbConnection {
             System.out.println("Error in strongest colonies by honey " + exception);
         }
     }
-
     //HOW MANY COLONIES AR TREATED WITH VARROA TREATMENT,SORT BY COUNT
-
     public void varroaTreatmentCount(Colony colony) {
 
         try {
-            sqlStatement = "SELECT COUNT(colony_id), varroa_treatment FROM colonies" +
+            sqlStatement = "SELECT COUNT (hive_id), varroa_treatment FROM colonies" +
                     " GROUP BY varroa_treatment  " +
-                    "ORDER BY COUNT(colony_id) DESC";
+                    "ORDER BY COUNT(hive_id) DESC";
 
             ResultSet resultSet = statement.executeQuery(sqlStatement);
-
             while (resultSet.next()) {
-                int varCount = resultSet.getInt("Count(colony_id)");
+                int varCount = resultSet.getInt("COUNT (hive_id)");
                 String varroaTreatment = resultSet.getString("varroa_treatment");
                 System.out.println("There are " + varCount + " hives treated with treatment " + varroaTreatment);
             }
@@ -224,6 +211,20 @@ public class DbConnection {
             System.out.println("There is error in varroa treatment count: " + exception);
 
         }
+    }
+    //    ARRAYLIST FROM VARROA TREATMENT
+    public ArrayList<String> getvarroaTreatment() {
+        ArrayList<String> varroaTreatementList = new ArrayList<String>();
+        try {
+            sqlStatement = "SELECT varroa_treatment FROM colonies";
+            ResultSet resultSet = statement.executeQuery(sqlStatement);
+            while (resultSet.next()) {
+                varroaTreatementList.add(resultSet.getString("varroa_treatment"));
+            }
+        } catch (SQLException exception) {
+            System.out.println("There is error in varroa treatment list " + exception);
+        }
+        return varroaTreatementList;
     }
 
     //    COUNT HOW MANY HIVES ARE IN EACH LOCATION
@@ -273,7 +274,7 @@ public class DbConnection {
     // PRINT OUT INFORMATION ABOUT COLONIES
     public void coloniesInfo(Colony colony) {
         try {
-            sqlStatement = "SELECT*FROM colonies WHERE hive_id = '"+ colony.getHiveId()+"'";
+            sqlStatement = "SELECT*FROM colonies WHERE hive_id = '" + colony.getHiveId() + "'";
             ResultSet resultSet = statement.executeQuery(sqlStatement);
             System.out.println("Information about selected colony:");
             while (resultSet.next()) {
@@ -309,7 +310,37 @@ public class DbConnection {
             System.out.println("There is error in printing info about colonies" + exception);
         }
     }
+
+    //  ADD RECORD TO HISTORY TABLE
+    public void addRecordToHistory(History history) {
+        try {
+            sqlStatement = "INSERT INTO histories (action_done, date_and_time, unit) VALUES " +
+                    "('" + history.getActionDone() + "'," +
+                    "'" + history.getDataAndTime() + "'," +
+                    "'" + history.getUnits() + "')";
+            statement.execute(sqlStatement);
+        } catch (SQLException exception) {
+            System.out.println("Error when adding record to history table " + exception);
+        }
+    }
+    public ArrayList<Integer> findHivesToDelete(Location location) {
+        ArrayList<Integer> hivesList = new ArrayList<Integer>();
+        try {
+            sqlStatement = "SELECT* FROM hives" +
+                    " JOIN locations" +
+                    " ON locations.location_id = hives.location_id " +
+                    " WHERE locations.location_name='" + location.getLocationName() + "'";
+            ResultSet resultSet = statement.executeQuery(sqlStatement);
+            while (resultSet.next()) {
+                hivesList.add(resultSet.getInt("hive_id"));
+            }
+        } catch (SQLException exception) {
+            System.out.println("Error finding hives to delete" + exception);
+        }return hivesList;
+    }
+
 }
+
 
 
 

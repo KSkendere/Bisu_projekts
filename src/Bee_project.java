@@ -1,4 +1,7 @@
 import java.sql.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Bee_project {
@@ -16,6 +19,9 @@ public class Bee_project {
         Location location = new Location();
 // CREATE OBJECT FROM CLASS HIVE
         Hive hive = new Hive();
+        History history = new History();
+        LocalDateTime localDateTime = LocalDateTime.now();
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
 //ADD SCANNER
         Scanner scanner = new Scanner(System.in);
 
@@ -58,7 +64,7 @@ public class Bee_project {
                     break;
                 case 5:
 //RUN METHOD ADD NEW HIVE
-                    addNewHive(scanner, hive);
+                    addNewHive(scanner, hive, history, localDateTime, dateTimeFormatter);
                     break;
                 case 6:
 //RUN METHOD DELETE NEW HIVE
@@ -66,13 +72,13 @@ public class Bee_project {
                     break;
                 case 7:
 //RUN METHOD ADD NEW LOCATION
-                    addNewLocation(scanner, location);
+                    addNewLocation(scanner, location, history, localDateTime, dateTimeFormatter);
                     break;
                 case 8:
 //PRINT OUT ALL LOCATIONS
                     printLocation1(location);
 //RUN METHOD DELETE LOCATION
-                    deleteLocation(scanner, location);
+                    deleteLocation(scanner, location, hive, history, localDateTime, dateTimeFormatter);
                     break;
                 default:
                     System.out.println("This menu item does not exist");
@@ -85,7 +91,7 @@ public class Bee_project {
     }
 
     // CREATE METHOD ADD NEW LOCATION
-    public static void addNewLocation(Scanner scanner, Location location) {
+    public static void addNewLocation(Scanner scanner, Location location, History history, LocalDateTime localDateTime, DateTimeFormatter dateTimeFormatter) {
         System.out.println("Please enter location name");
         location.setLocationName(scanner.next());
         System.out.println("Please enter location address");
@@ -94,11 +100,15 @@ public class Bee_project {
         location.setLocationNote(scanner.next());
 //        CREATE LOCATION
         dbConnection.createLocation(location);
+//        ADD RECORD TO HISTORY TABLE
+        history.setActionDone("Added new location " + location.getLocationName());
+        history.setDataAndTime(localDateTime.format(dateTimeFormatter));
+        dbConnection.addRecordToHistory(history);
 
     }
 // CREATE METHOD ADD NEW HIVE
 
-    public static void addNewHive(Scanner scanner, Hive hive) {
+    public static void addNewHive(Scanner scanner, Hive hive, History history, LocalDateTime localDateTime, DateTimeFormatter dateTimeFormatter) {
 
         System.out.println("Please enter hive id");
         hive.setHiveId(scanner.nextInt());
@@ -111,29 +121,46 @@ public class Bee_project {
         System.out.println("Please enter location Id");
         hive.setLocationId(scanner.nextInt());
         dbConnection.createHive(hive);
-
-
+//
+        history.setActionDone("Added new hive: nr: " + hive.getHiveId() + " ,in location: " + hive.getLocationId());
+        history.setDataAndTime(localDateTime.format(dateTimeFormatter));
+        dbConnection.addRecordToHistory(history);
     }
 
-    // PRINT METHOD DELETE LOCATION
+    // METHOD PRINT OUT LOCATIONS
 
     public static void printLocation1(Location location){
         dbConnection.printLocation(location);
+
     }
 
     // CREATE METHOD DELETE LOCATION
 
-    public static void deleteLocation(Scanner scanner, Location location) {
+    public static void deleteLocation(Scanner scanner, Location location, Hive hive, History history, LocalDateTime localDateTime, DateTimeFormatter dateTimeFormatter) {
         System.out.println("Please enter location you want to delete");
         location.setLocationName(scanner.next());
+        System.out.println(dbConnection.findHivesToDelete(location).toString());
+        for (int eatchvariable : dbConnection.findHivesToDelete(location)
+        ) {
+            hive.setHiveId(eatchvariable);
+            dbConnection.deleteHive(hive);
+            history.setActionDone("Hive nr. deleted together with location " + location.getLocationName() + " is: " + eatchvariable);
+            history.setDataAndTime(localDateTime.format(dateTimeFormatter));
+            dbConnection.addRecordToHistory(history);
+        }
+        history.setActionDone("Location deleted " + location.getLocationName());
+        history.setDataAndTime(localDateTime.format(dateTimeFormatter));
+        dbConnection.addRecordToHistory(history);
         dbConnection.deleteLocation(location);
     }
+
 
     // CREATE METHOD DELETE HIVE
     public static void deleteHive(Scanner scanner, Hive hive) {
         System.out.println("Please enter hive id you want to delete");
         hive.setHiveId(scanner.nextInt());
         dbConnection.deleteHive(hive);
+
     }
     // COUNTING HIVES
     public static void countHive (Hive hive){
@@ -159,6 +186,25 @@ public class Bee_project {
         System.out.println("Select hive id whose colony you want information about");
         colony.setHiveId(scanner.nextInt());
         dbConnection.coloniesInfo(colony);
+    }
+
+    public static void getPercentsOfVarroaTreatement(Colony colony) {
+        int counterForL = 0;
+        int counterForM = 0;
+        int counterForA = 0;
+
+        for (int i = 0; i < dbConnection.getvarroaTreatment().size(); i++) {
+            if (dbConnection.getvarroaTreatment().get(i).equals("l")) {
+                counterForL++;
+            } else if (dbConnection.getvarroaTreatment().get(i).equals("m")) {
+                counterForM++;
+            } else if (dbConnection.getvarroaTreatment().get(i).equals("a")) {
+                counterForA++;
+            }
+        }
+        System.out.println((double) counterForL * 100 / dbConnection.getvarroaTreatment().size() + " % of colonies treated with treatment l");
+        System.out.println((double) counterForM * 100 / dbConnection.getvarroaTreatment().size() + " % of colonies treated with treatment m");
+        System.out.println((double) counterForA * 100 / dbConnection.getvarroaTreatment().size() + " % of colonies treated with treatment a");
     }
 }
 

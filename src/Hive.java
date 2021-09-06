@@ -1,37 +1,55 @@
 // CREATE CLASS LOCATION
 public class Hive {
+    private int id;
     private int hiveId;
     private String hiveStatus;
     private String hiveType;
     private String hiveNotes;
-    private int locationIdForHive;
+    private int locationId;
+
+
     // CREATE NON ARGUMENT CONSTRUCTOR
 
     public Hive() {
     }
 
+
     // CREATE CONSTRUCTOR WITH ARGUMENTS
-    public Hive(int hiveId, String hiveStatus, String hiveType, String hiveNotes, int locationIdForHive) {
+
+    public Hive(int id, int hiveId, String hiveStatus, String hiveType, String hiveNotes, int locationId) {
+        this.id = id;
         this.hiveId = hiveId;
         this.hiveStatus = hiveStatus;
         this.hiveType = hiveType;
         this.hiveNotes = hiveNotes;
-        this.locationIdForHive = locationIdForHive;
+        this.locationId = locationId;
     }
-        // CREATE TO STRING METHOD
 
-        @Override
-        public String toString () {
-            return "Hive{" +
-                    "hiveId=" + hiveId +
-                    ", hiveStatus='" + hiveStatus + '\'' +
-                    ", hiveType='" + hiveType + '\'' +
-                    ", hiveNotes='" + hiveNotes + '\'' +
-                    ", locationIdForHive=" + locationIdForHive +
-                    '}';
-        }
+    // CREATE TO STRING METHOD
+
+    @Override
+    public String toString() {
+        return "Hive{" +
+                "id=" + id +
+                ", hiveId=" + hiveId +
+                ", hiveStatus='" + hiveStatus + '\'' +
+                ", hiveType='" + hiveType + '\'' +
+                ", hiveNotes='" + hiveNotes + '\'' +
+                ", locationId=" + locationId +
+                '}';
+    }
+
+
 //        CREATE GETTERS AND SETTERS
 
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public int getHiveId() {
         return hiveId;
@@ -65,12 +83,12 @@ public class Hive {
         this.hiveNotes = hiveNotes;
     }
 
-    public int getLocationIdForHive() {
-        return locationIdForHive;
+    public int getLocationId() {
+        return locationId;
     }
 
-    public void setLocationIdForHive(int locationIdForHive) {
-        this.locationIdForHive = locationIdForHive;
+    public void setLocationId(int locationId) {
+        this.locationId = locationId;
     }
 }
 

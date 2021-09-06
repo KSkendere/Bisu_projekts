@@ -12,13 +12,13 @@
         private Integer pollen;
         private String varroaTreatment;
         private Integer foodAdded;
-        private Integer nextVisit;
+        private String nextVisit;
 
         public Colony() {
         }
 //    ARGUMENT CONSTRUCTOR
 
-        public Colony(Integer id, Integer hiveId, String colonyOrigin, String queenBreed, String queenYear, Integer numberOfSupers, Integer numberOfFrames, Integer numberOfBees, Integer numberOfBrood, Integer kgHoney, Integer pollen, String varroaTreatment, Integer foodAdded, Integer nextVisit) {
+        public Colony(Integer id, Integer hiveId, String colonyOrigin, String queenBreed, String queenYear, Integer numberOfSupers, Integer numberOfFrames, Integer numberOfBees, Integer numberOfBrood, Integer kgHoney, Integer pollen, String varroaTreatment, Integer foodAdded, String nextVisit) {
             this.id = id;
             this.hiveId = hiveId;
             this.colonyOrigin = colonyOrigin;
@@ -34,6 +34,7 @@
             this.foodAdded = foodAdded;
             this.nextVisit = nextVisit;
         }
+
 
 //    TO STRING METHOD
 
@@ -53,9 +54,10 @@
                     ", pollen=" + pollen +
                     ", varroaTreatment='" + varroaTreatment + '\'' +
                     ", foodAdded=" + foodAdded +
-                    ", nextVisit=" + nextVisit +
+                    ", nextVisit='" + nextVisit + '\'' +
                     '}';
         }
+
 
 //    GETTERS & SETTERS
 
@@ -164,11 +166,11 @@
             this.foodAdded = foodAdded;
         }
 
-        public Integer getNextVisit() {
+        public String getNextVisit() {
             return nextVisit;
         }
 
-        public void setNextVisit(Integer nextVisit) {
+        public void setNextVisit(String nextVisit) {
             this.nextVisit = nextVisit;
         }
     }

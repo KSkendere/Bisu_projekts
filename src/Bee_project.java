@@ -1,16 +1,16 @@
 import java.sql.*;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.logging.SimpleFormatter;
 
 public class Bee_project {
-
-
     private static DbConnection dbConnection;
 
     public static void main(String[] args) {
-
 
         dbConnection = new DbConnection();
 // CREATE OBJECT FROM CLASS COLONY
@@ -22,9 +22,9 @@ public class Bee_project {
         History history = new History();
         LocalDateTime localDateTime = LocalDateTime.now();
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+
 //ADD SCANNER
         Scanner scanner = new Scanner(System.in);
-
 
 // Creating a MENU
         int menu;
@@ -42,40 +42,92 @@ public class Bee_project {
             System.out.println("Select 8 to delete a location");
             System.out.println("Select 0 to exit the application");
             menu = scanner.nextInt();
-
+scanner.nextLine();
 
             switch (menu) {
                 case 1:
+//RUN METHOD COUNT HIVE
                     countHive(hive);
+//RUN METHOD SUM OF HONEY AND POLLEN
                     honeyAndPollenSum(colony);
+//RUN METHOD PRINT OUT 3 STRONGEST HIVES
+                    strongestHivesByHoney(colony, location, hive);
+//RUN METHOD VARROA TREATMENT COUNT
+                    varroaTreatmentCount(colony);
+                    getPercentsOfVarroaTreatement(colony);
+
                     break;
                 case 2:
-//RUN METHOD TO COUNT HIVES ARE IN EACH LOCATION
-                    hivesInLocations(hive, location);
-//RUN METHOD TO COUNT HONEY IN EACH LOCATION
-                    countHoneyInLocation(location, hive, colony);
-                    break;
-                case 3:
+                    int menu1;
+                    do {
+                        System.out.println("Please choose what information about bee hive locations you want to know!");
+                        System.out.println("");
+                        System.out.println("Please select 1 if you want to see information about number of bee hives in each location");
+                        System.out.println("Please select 2 if you want to see information about total amount of honey in each location");
+                        System.out.println("Please select 3 if you want to see information about total amount of pollen in each location");
+                        System.out.println("Please select 0 to exit locations section");
+//                        need to add 0 plus need to add default
+                        menu1 = scanner.nextInt();
+                        scanner.nextLine();
 
+                        switch (menu1) {
+                            case 1:
+                                System.out.println("Information about number of bee hives in each location:");
+                                System.out.println("");
+                                hivesInLocations(hive,location);
+                                System.out.println("");
+                                break;
+                            case 2:
+                                System.out.println("Information about total amount of honey in each location:");
+                                System.out.println("");
+                                countHoneyInLocation(location,hive,colony);
+                                System.out.println("");
+                                break;
+                            case 3:
+                                System.out.println("Information about total amount of pollen in each location:");
+                                System.out.println("");
+// Insert method
+                                System.out.println("");
+                                break;
+                            default:
+                                if (menu1 == 0) {
+                                    System.out.println("Going back to main menu.");
+                                    System.out.println();
+                                } else {
+                                    System.out.println("No such option!");
+                                }
+                        }
+                    } while (menu1 != 0);
+                    break;
+
+                case 3:
+                    getInfoFromHistoryTableAboutData(history, scanner);
                     break;
                 case 4:
 //PRINT INFORMATION ABOUT SELECTED COLONY
                     printInfoAboutColony(scanner, colony);
+////                    Help for Livija
+//                    System.out.println("Please enter next visits date: ");
+//                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/YYYY");
+//                   String dateOne = "";
+//                      dateOne = scanner.nextLine();
+//                     Date date = simpleDateFormat.parse(dateOne);
+
                     break;
                 case 5:
 //RUN METHOD ADD NEW HIVE
-                    addNewHive(scanner, hive, history, localDateTime, dateTimeFormatter);
+                    addNewHive(scanner, hive, history, location, localDateTime, dateTimeFormatter);
                     break;
                 case 6:
 //RUN METHOD DELETE NEW HIVE
-                    deleteHive(scanner, hive);
+                    deleteHive(scanner, hive, location, history, localDateTime, dateTimeFormatter);
                     break;
                 case 7:
 //RUN METHOD ADD NEW LOCATION
                     addNewLocation(scanner, location, history, localDateTime, dateTimeFormatter);
                     break;
                 case 8:
-//PRINT OUT ALL LOCATIONS
+//RUN METHOD TO PRINT OUT ALL LOCATIONS
                     printLocation1(location);
 //RUN METHOD DELETE LOCATION
                     deleteLocation(scanner, location, hive, history, localDateTime, dateTimeFormatter);
@@ -86,18 +138,19 @@ public class Bee_project {
             }
 
         } while (menu != 0);
-
-
     }
 
     // CREATE METHOD ADD NEW LOCATION
     public static void addNewLocation(Scanner scanner, Location location, History history, LocalDateTime localDateTime, DateTimeFormatter dateTimeFormatter) {
         System.out.println("Please enter location name");
-        location.setLocationName(scanner.next());
+        location.setLocationName(scanner.nextLine());
+
         System.out.println("Please enter location address");
-        location.setLocationAddress(scanner.next());
+        location.setLocationAddress(scanner.nextLine());
+
         System.out.println("Please enter location note");
-        location.setLocationNote(scanner.next());
+        location.setLocationNote(scanner.nextLine());
+
 //        CREATE LOCATION
         dbConnection.createLocation(location);
 //        ADD RECORD TO HISTORY TABLE
@@ -107,68 +160,89 @@ public class Bee_project {
 
     }
 // CREATE METHOD ADD NEW HIVE
-
-    public static void addNewHive(Scanner scanner, Hive hive, History history, LocalDateTime localDateTime, DateTimeFormatter dateTimeFormatter) {
+    public static void addNewHive(Scanner scanner, Hive hive, History history, Location location, LocalDateTime localDateTime, DateTimeFormatter dateTimeFormatter) {
 
         System.out.println("Please enter hive id");
         hive.setHiveId(scanner.nextInt());
+        scanner.nextLine();
         System.out.println("Please enter hive status");
-        hive.setHiveStatus(scanner.next());
+        hive.setHiveStatus(scanner.nextLine());
+
         System.out.println("Please enter hive type");
-        hive.setHiveType(scanner.next());
+        hive.setHiveType(scanner.nextLine());
+
         System.out.println("Please enter  hive notes");
-        hive.setHiveNotes(scanner.next());
+        hive.setHiveNotes(scanner.nextLine());
+
         System.out.println("Please enter location Id");
         hive.setLocationId(scanner.nextInt());
+        scanner.nextLine();
         dbConnection.createHive(hive);
-//
-        history.setActionDone("Added new hive: nr: " + hive.getHiveId() + " ,in location: " + hive.getLocationId());
+//   ADD INFORMATION TO HISTORY TABLE
+        history.setActionDone("Added new hive: nr: " + hive.getHiveId() + " ,in location: " + dbConnection.findLocationForAddedHive(location, hive));
         history.setDataAndTime(localDateTime.format(dateTimeFormatter));
         dbConnection.addRecordToHistory(history);
     }
-
     // METHOD PRINT OUT LOCATIONS
 
-    public static void printLocation1(Location location){
+    public static void printLocation1(Location location) {
         dbConnection.printLocation(location);
-
     }
 
     // CREATE METHOD DELETE LOCATION
-
     public static void deleteLocation(Scanner scanner, Location location, Hive hive, History history, LocalDateTime localDateTime, DateTimeFormatter dateTimeFormatter) {
         System.out.println("Please enter location you want to delete");
-        location.setLocationName(scanner.next());
-        System.out.println(dbConnection.findHivesToDelete(location).toString());
+        location.setLocationName(scanner.nextLine());
+
+        //        DELETE HIVES TOGETHER WITH LOCATION WITH FOREACH LOOP
         for (int eatchvariable : dbConnection.findHivesToDelete(location)
         ) {
             hive.setHiveId(eatchvariable);
             dbConnection.deleteHive(hive);
+//      ADD INFORMATION ABOUT DELETED HIVES IN HISTORY TABLE IN LOOP
             history.setActionDone("Hive nr. deleted together with location " + location.getLocationName() + " is: " + eatchvariable);
             history.setDataAndTime(localDateTime.format(dateTimeFormatter));
             dbConnection.addRecordToHistory(history);
         }
+// ADD INFORMATION ABOUT DELETED LOCATION IN HISTORY TABLE
         history.setActionDone("Location deleted " + location.getLocationName());
         history.setDataAndTime(localDateTime.format(dateTimeFormatter));
         dbConnection.addRecordToHistory(history);
+//        DELETE LOCATION
         dbConnection.deleteLocation(location);
     }
 
-
     // CREATE METHOD DELETE HIVE
-    public static void deleteHive(Scanner scanner, Hive hive) {
+    public static void deleteHive(Scanner scanner, Hive hive, Location location, History history, LocalDateTime localDateTime, DateTimeFormatter dateTimeFormatter) {
         System.out.println("Please enter hive id you want to delete");
         hive.setHiveId(scanner.nextInt());
+        scanner.nextLine();
+//        ADD INFORMATION IN HISTORY DATA BASE
+        history.setActionDone("Deleted hive nr:" + hive.getHiveId() + " from location " + dbConnection.findLocationForHive(location, hive));
+        history.setDataAndTime(localDateTime.format(dateTimeFormatter));
+        dbConnection.addRecordToHistory(history);
+//        DELETING HIVE
         dbConnection.deleteHive(hive);
-
     }
+
     // COUNTING HIVES
-    public static void countHive (Hive hive){
+    public static void countHive(Hive hive) {
         dbConnection.countHives(hive);
     }
-//    SUM OF HONEY AND POLLEN
-    public static void honeyAndPollenSum (Colony colony){
+
+    //    SUM OF HONEY AND POLLEN
+    public static void honeyAndPollenSum(Colony colony) {
         dbConnection.sumOfHoneyAndPollen(colony);
+    }
+//  3 STRONGEST HIVES BY HONEY
+
+    public static void strongestHivesByHoney(Colony colony, Location location, Hive hive) {
+        dbConnection.strongestColoniesByHoney(colony, hive, location);
+    }
+
+    //HOW MANY COLONIES ARE TREATED WITH VARROA TREATMENT,SORT BY COUNT
+    public static void varroaTreatmentCount(Colony colony) {
+        dbConnection.varroaTreatmentCount(colony);
     }
 
     //HOW MANY HIVES IN LOCATIONS
@@ -185,6 +259,7 @@ public class Bee_project {
     public static void printInfoAboutColony(Scanner scanner, Colony colony) {
         System.out.println("Select hive id whose colony you want information about");
         colony.setHiveId(scanner.nextInt());
+        scanner.nextLine();
         dbConnection.coloniesInfo(colony);
     }
 
@@ -206,5 +281,16 @@ public class Bee_project {
         System.out.println((double) counterForM * 100 / dbConnection.getvarroaTreatment().size() + " % of colonies treated with treatment m");
         System.out.println((double) counterForA * 100 / dbConnection.getvarroaTreatment().size() + " % of colonies treated with treatment a");
     }
+
+    //    GET INFORMATION FROM HISTORY TABLE ABOUT SPECIFIC DATA
+    public static void getInfoFromHistoryTableAboutData(History history, Scanner scanner) {
+        System.out.println("Please enter data you would like see information about in format: dd-mm-yyyy");
+        history.setDataAndTime(scanner.nextLine());
+
+        dbConnection.getInformationFromHistoryTable(history);
+    }
+
+
 }
+
 

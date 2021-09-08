@@ -450,11 +450,11 @@ public class DbConnection {
     //add colony origin
     public void attachColonyOrigin(Colony colony){
         try {
-            sqlStatement = "UPDATE colonies SET colonyOrigin = " +
+            sqlStatement = "UPDATE colonies SET colony_origin = " +
                     "'" + colony.getColonyOrigin() + "' " +
-                    "WHERE hiveId = " +
+                    "WHERE hive_id = " +
                     "'" + colony.getHiveId() + "')";
-            statement.executeQuery(sqlStatement);
+            statement.execute(sqlStatement);
         }catch (SQLException exception){
             System.out.println("Error adding colony origin " + exception);
         }
@@ -462,7 +462,9 @@ public class DbConnection {
     //add queen breed
     public void attachQueenBreed(Colony colony){
         try {
-            sqlStatement = "UPDATE colonies SET queen_breed = '" + colony.getQueenBreed() + "' WHERE hive_id = '" + colony.getHiveId() + "'";
+            sqlStatement = "UPDATE colonies SET queen_breed = '" +
+                    "" + colony.getQueenBreed() + "' WHERE hive_id = '" +
+                    "" + colony.getHiveId() + "'";
             statement.execute(sqlStatement);
 
         }catch (SQLException exception){
@@ -475,8 +477,8 @@ public class DbConnection {
             sqlStatement = "UPDATE colonies SET queen_year = " +
                     "'" + colony.getQueenYear() + "'" +
                     "WHERE hive_id = " +
-                    "'" + colony.getHiveId() + "')";
-            statement.executeQuery(sqlStatement);
+                    "'" + colony.getHiveId() + "'";
+            statement.execute(sqlStatement);
 
         }catch (SQLException exception){
             System.out.println("Error adding queen's year " + exception);
@@ -489,7 +491,7 @@ public class DbConnection {
                     "'" + colony.getNumberOfSupers() + "' " +
                     "WHERE hive_id = " +
                     "'" + colony.getHiveId() + "')";
-            statement.executeQuery(sqlStatement);
+            statement.execute(sqlStatement);
 
         }catch (SQLException exception){
             System.out.println("Error adding number of supers " + exception);
@@ -498,11 +500,11 @@ public class DbConnection {
     //add num of frames
     public void attachNumOfFrames(Colony colony){
         try {
-            sqlStatement = "UPDATE colonies SET numberOfFrames = " +
+            sqlStatement = "UPDATE colonies SET frames = " +
                     "'" + colony.getNumberOfFrames() + "' " +
-                    "WHERE hiveId = " +
+                    "WHERE hive_id = " +
                     "'" + colony.getHiveId() + "')";
-            statement.executeQuery(sqlStatement);
+            statement.execute(sqlStatement);
 
         }catch (SQLException exception){
             System.out.println("Error adding number of frames " + exception);
@@ -511,11 +513,11 @@ public class DbConnection {
     //add num of bees
     public void attachNumOfBees(Colony colony){
         try {
-            sqlStatement = "UPDATE colonies SET numberOfBees = " +
+            sqlStatement = "UPDATE colonies SET bees = " +
                     "'" + colony.getNumberOfBees() + "' " +
-                    "WHERE hiveId = " +
+                    "WHERE hive_id = " +
                     "'" + colony.getHiveId() + "')";
-            statement.executeQuery(sqlStatement);
+            statement.execute(sqlStatement);
 
         }catch (SQLException exception){
             System.out.println("Error adding number of bees " + exception);
@@ -524,11 +526,11 @@ public class DbConnection {
     //add num og brood
     public void attachNumOfBrood(Colony colony){
         try {
-            sqlStatement = "UPDATE colonies SET numberOfBrood = " +
+            sqlStatement = "UPDATE colonies SET brood = " +
                     "'" + colony.getNumberOfBrood() + "' " +
-                    "WHERE hiveId = " +
+                    "WHERE hive_id = " +
                     "'" + colony.getHiveId() + "')";
-            statement.executeQuery(sqlStatement);
+            statement.execute(sqlStatement);
 
         }catch (SQLException exception){
             System.out.println("Error adding number of brood " + exception);
@@ -537,11 +539,11 @@ public class DbConnection {
     //add kg honey
     public void attachKgHoney(Colony colony){
         try {
-            sqlStatement = "UPDATE colonies SET kgHoney = " +
+            sqlStatement = "UPDATE colonies SET honey = " +
                     "'" + colony.getKgHoney() + "' " +
-                    "WHERE hiveId = " +
+                    "WHERE hive_id = " +
                     "'" + colony.getHiveId() + "')";
-            statement.executeQuery(sqlStatement);
+            statement.execute(sqlStatement);
 
         }catch (SQLException exception){
             System.out.println("Error adding kg honey " + exception);
@@ -552,9 +554,9 @@ public class DbConnection {
         try {
             sqlStatement = "UPDATE colonies SET pollen = " +
                     "'" + colony.getPollen() + "' " +
-                    "WHERE hiveId = " +
+                    "WHERE hive_id = " +
                     "'" + colony.getHiveId() + "')";
-            statement.executeQuery(sqlStatement);
+            statement.execute(sqlStatement);
 
         }catch (SQLException exception){
             System.out.println("Error adding pollen " + exception);
@@ -563,11 +565,11 @@ public class DbConnection {
     //add varroa treatment
     public void attachVarroaTreatment(Colony colony){
         try {
-            sqlStatement = "UPDATE colonies SET varroaTreatment = " +
+            sqlStatement = "UPDATE colonies SET varroa_treatment = " +
                     "'" + colony.getVarroaTreatment() + "' " +
-                    "WHERE hiveId = " +
+                    "WHERE hive_id = " +
                     "'" + colony.getHiveId() + "')";
-            statement.executeQuery(sqlStatement);
+            statement.execute(sqlStatement);
 
         }catch (SQLException exception){
             System.out.println("Error adding varroa treatment " + exception);
@@ -576,159 +578,17 @@ public class DbConnection {
     //add food added
     public void attachFoodAdded(Colony colony){
         try {
-            sqlStatement = "UPDATE colonies SET foodAdded = " +
+            sqlStatement = "UPDATE colonies SET food_added = " +
                     "'" + colony.getFoodAdded() + "' " +
-                    "WHERE hiveId = " +
+                    "WHERE hive_id = " +
                     "'" + colony.getHiveId() + "')";
-            statement.executeQuery(sqlStatement);
+            statement.execute(sqlStatement);
 
         }catch (SQLException exception){
             System.out.println("Error adding food " + exception);
         }
     }
 
-//    //add colony origin
-//    public void attachColonyOrigin(Colony colony){
-//        try {
-//            sqlStatement = "UPDATE colonies SET colonyOrigin = " +
-//                    "'" + colony.getColonyOrigin() + "' " +
-//                    "WHERE hiveId = " +
-//                    "'" + colony.getHiveId() + "')";
-//            statement.executeQuery(sqlStatement);
-//        }catch (SQLException exception){
-//            System.out.println("Error adding colony origin " + exception);
-//        }
-//    }
-//    //add queen breed
-//    public void attachQueenBreed(Colony colony){
-//        try {
-//            sqlStatement = "UPDATE colonies SET queenBreed = " +
-//                    "'" + colony.getQueenBreed() + "' " +
-//                    "WHERE hiveId = " +
-//                    "'" + colony.getHiveId() + "')";
-//            statement.executeQuery(sqlStatement);
-//
-//        }catch (SQLException exception){
-//            System.out.println("Error adding queen's breed " + exception);
-//        }
-//    }
-//    //add queen year
-//    public void attachQueenYear(Colony colony){
-//        try {
-//            sqlStatement = "UPDATE colonies SET queenYear = " +
-//                    "'" + colony.getQueenYear() + "' " +
-//                    "WHERE hiveId = " +
-//                    "'" + colony.getHiveId() + "')";
-//            statement.executeQuery(sqlStatement);
-//
-//        }catch (SQLException exception){
-//            System.out.println("Error adding queen's year " + exception);
-//        }
-//    }
-//    //add num of supers
-//    public void attachNumOfSupers(Colony colony){
-//        try {
-//            sqlStatement = "UPDATE colonies SET numberOfSupers = " +
-//                    "'" + colony.getNumberOfSupers() + "' " +
-//                    "WHERE hiveId = " +
-//                    "'" + colony.getHiveId() + "')";
-//            statement.executeQuery(sqlStatement);
-//
-//        }catch (SQLException exception){
-//            System.out.println("Error adding number of supers " + exception);
-//        }
-//    }
-//    //add num of frames
-//    public void attachNumOfFrames(Colony colony){
-//        try {
-//            sqlStatement = "UPDATE colonies SET numberOfFrames = " +
-//                    "'" + colony.getNumberOfFrames() + "' " +
-//                    "WHERE hiveId = " +
-//                    "'" + colony.getHiveId() + "')";
-//            statement.executeQuery(sqlStatement);
-//
-//        }catch (SQLException exception){
-//            System.out.println("Error adding number of frames " + exception);
-//        }
-//    }
-//    //add num of bees
-//    public void attachNumOfBees(Colony colony){
-//        try {
-//            sqlStatement = "UPDATE colonies SET numberOfBees = " +
-//                    "'" + colony.getNumberOfBees() + "' " +
-//                    "WHERE hiveId = " +
-//                    "'" + colony.getHiveId() + "')";
-//            statement.executeQuery(sqlStatement);
-//
-//        }catch (SQLException exception){
-//            System.out.println("Error adding number of bees " + exception);
-//        }
-//    }
-//    //add num og brood
-//    public void attachNumOfBrood(Colony colony){
-//        try {
-//            sqlStatement = "UPDATE colonies SET numberOfBrood = " +
-//                    "'" + colony.getNumberOfBrood() + "' " +
-//                    "WHERE hiveId = " +
-//                    "'" + colony.getHiveId() + "')";
-//            statement.executeQuery(sqlStatement);
-//
-//        }catch (SQLException exception){
-//            System.out.println("Error adding number of brood " + exception);
-//        }
-//    }
-//    //add kg honey
-//    public void attachKgHoney(Colony colony){
-//        try {
-//            sqlStatement = "UPDATE colonies SET kgHoney = " +
-//                    "'" + colony.getKgHoney() + "' " +
-//                    "WHERE hiveId = " +
-//                    "'" + colony.getHiveId() + "')";
-//            statement.executeQuery(sqlStatement);
-//
-//        }catch (SQLException exception){
-//            System.out.println("Error adding kg honey " + exception);
-//        }
-//    }
-//    //add pollen
-//    public void attachPollen(Colony colony){
-//        try {
-//            sqlStatement = "UPDATE colonies SET pollen = " +
-//                    "'" + colony.getPollen() + "' " +
-//                    "WHERE hiveId = " +
-//                    "'" + colony.getHiveId() + "')";
-//            statement.executeQuery(sqlStatement);
-//
-//        }catch (SQLException exception){
-//            System.out.println("Error adding pollen " + exception);
-//        }
-//    }
-//    //add varroa treatment
-//    public void attachVarroaTreatment(Colony colony){
-//        try {
-//            sqlStatement = "UPDATE colonies SET varroaTreatment = " +
-//                    "'" + colony.getVarroaTreatment() + "' " +
-//                    "WHERE hiveId = " +
-//                    "'" + colony.getHiveId() + "')";
-//            statement.executeQuery(sqlStatement);
-//
-//        }catch (SQLException exception){
-//            System.out.println("Error adding varroa treatment " + exception);
-//        }
-//    }
-//    //add food added
-//    public void attachFoodAdded(Colony colony){
-//        try {
-//            sqlStatement = "UPDATE colonies SET foodAdded = " +
-//                    "'" + colony.getFoodAdded() + "' " +
-//                    "WHERE hiveId = " +
-//                    "'" + colony.getHiveId() + "')";
-//            statement.executeQuery(sqlStatement);
-//
-//        }catch (SQLException exception){
-//            System.out.println("Error adding food " + exception);
-//        }
-//    }
 
 
 }

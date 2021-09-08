@@ -453,7 +453,7 @@ public class DbConnection {
             sqlStatement = "UPDATE colonies SET colony_origin = " +
                     "'" + colony.getColonyOrigin() + "' " +
                     "WHERE hive_id = " +
-                    "'" + colony.getHiveId() + "')";
+                    "'" + colony.getHiveId() + "'";
             statement.execute(sqlStatement);
         }catch (SQLException exception){
             System.out.println("Error adding colony origin " + exception);
@@ -490,7 +490,7 @@ public class DbConnection {
             sqlStatement = "UPDATE colonies SET supers = " +
                     "'" + colony.getNumberOfSupers() + "' " +
                     "WHERE hive_id = " +
-                    "'" + colony.getHiveId() + "')";
+                    "'" + colony.getHiveId() + "'";
             statement.execute(sqlStatement);
 
         }catch (SQLException exception){
@@ -503,7 +503,7 @@ public class DbConnection {
             sqlStatement = "UPDATE colonies SET frames = " +
                     "'" + colony.getNumberOfFrames() + "' " +
                     "WHERE hive_id = " +
-                    "'" + colony.getHiveId() + "')";
+                    "'" + colony.getHiveId() + "'";
             statement.execute(sqlStatement);
 
         }catch (SQLException exception){
@@ -516,7 +516,7 @@ public class DbConnection {
             sqlStatement = "UPDATE colonies SET bees = " +
                     "'" + colony.getNumberOfBees() + "' " +
                     "WHERE hive_id = " +
-                    "'" + colony.getHiveId() + "')";
+                    "'" + colony.getHiveId() + "'";
             statement.execute(sqlStatement);
 
         }catch (SQLException exception){
@@ -529,7 +529,7 @@ public class DbConnection {
             sqlStatement = "UPDATE colonies SET brood = " +
                     "'" + colony.getNumberOfBrood() + "' " +
                     "WHERE hive_id = " +
-                    "'" + colony.getHiveId() + "')";
+                    "'" + colony.getHiveId() + "'";
             statement.execute(sqlStatement);
 
         }catch (SQLException exception){
@@ -542,7 +542,7 @@ public class DbConnection {
             sqlStatement = "UPDATE colonies SET honey = " +
                     "'" + colony.getKgHoney() + "' " +
                     "WHERE hive_id = " +
-                    "'" + colony.getHiveId() + "')";
+                    "'" + colony.getHiveId() + "'";
             statement.execute(sqlStatement);
 
         }catch (SQLException exception){
@@ -555,7 +555,7 @@ public class DbConnection {
             sqlStatement = "UPDATE colonies SET pollen = " +
                     "'" + colony.getPollen() + "' " +
                     "WHERE hive_id = " +
-                    "'" + colony.getHiveId() + "')";
+                    "'" + colony.getHiveId() + "'";
             statement.execute(sqlStatement);
 
         }catch (SQLException exception){
@@ -568,7 +568,7 @@ public class DbConnection {
             sqlStatement = "UPDATE colonies SET varroa_treatment = " +
                     "'" + colony.getVarroaTreatment() + "' " +
                     "WHERE hive_id = " +
-                    "'" + colony.getHiveId() + "')";
+                    "'" + colony.getHiveId() + "'";
             statement.execute(sqlStatement);
 
         }catch (SQLException exception){
@@ -581,7 +581,7 @@ public class DbConnection {
             sqlStatement = "UPDATE colonies SET food_added = " +
                     "'" + colony.getFoodAdded() + "' " +
                     "WHERE hive_id = " +
-                    "'" + colony.getHiveId() + "')";
+                    "'" + colony.getHiveId() + "'";
             statement.execute(sqlStatement);
 
         }catch (SQLException exception){

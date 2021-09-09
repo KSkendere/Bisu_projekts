@@ -3,7 +3,7 @@
         private Integer hiveId;
         private String colonyOrigin;
         private String queenBreed;
-        private String queenYear;
+        private Integer queenYear;
         private Integer numberOfSupers;
         private Integer numberOfFrames;
         private Integer numberOfBees;
@@ -18,7 +18,7 @@
         }
 //    ARGUMENT CONSTRUCTOR
 
-        public Colony(Integer id, Integer hiveId, String colonyOrigin, String queenBreed, String queenYear, Integer numberOfSupers, Integer numberOfFrames, Integer numberOfBees, Integer numberOfBrood, Integer kgHoney, Integer pollen, String varroaTreatment, Integer foodAdded, String nextVisit) {
+        public Colony(Integer id, Integer hiveId, String colonyOrigin, String queenBreed, Integer queenYear, Integer numberOfSupers, Integer numberOfFrames, Integer numberOfBees, Integer numberOfBrood, Integer kgHoney, Integer pollen, String varroaTreatment, Integer foodAdded, String nextVisit) {
             this.id = id;
             this.hiveId = hiveId;
             this.colonyOrigin = colonyOrigin;
@@ -94,11 +94,11 @@
             this.queenBreed = queenBreed;
         }
 
-        public String getQueenYear() {
+        public Integer getQueenYear() {
             return queenYear;
         }
 
-        public void setQueenYear(String queenYear) {
+        public void setQueenYear(Integer queenYear) {
             this.queenYear = queenYear;
         }
 

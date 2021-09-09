@@ -111,28 +111,48 @@ public class DbConnection {
             System.out.println("Error inserting into hives table " + exception);
         }
     }
+
+    //    FIND OUT IF THERE IS HIVE WITH SUCH NUMBER ALREADY
+    public int checkHivesNr(Hive hive) {
+        int dublicateHiveId = 0;
+        try {
+            sqlStatement = "SELECT hive_id FROM hives WHERE hive_id = " + hive.getHiveId() + "";
+            ResultSet resultSet = statement.executeQuery(sqlStatement);
+            while (resultSet.next()) {
+                dublicateHiveId = resultSet.getInt("hive_id");
+
+            }
+
+        } catch (SQLException exception) {
+            System.out.println("Error checking hives nr " + exception);
+        }
+        return dublicateHiveId;
+
+    }
+
 //    FIND LOCATION FOR ADDED HIVE FOR RECORD IN HISTORY TABLE
 
     public String findLocationForAddedHive(Location location, Hive hive) {
-        String returnLocationForAddedHive ="";
+        String returnLocationForAddedHive = "";
         try {
             sqlStatement = "SELECT location_name, hive_id" +
                     " From locations " +
                     "JOIN hives " +
                     "ON hives.location_id = locations.location_id";
             ResultSet resultSet = statement.executeQuery(sqlStatement);
-while (resultSet.next()) {
-    String locationName = resultSet.getString("location_name");
-    int hiveID = resultSet.getInt("hive_id");
-    if (hiveID == hive.getHiveId()) {
-returnLocationForAddedHive = locationName;
-    }
-}
+            while (resultSet.next()) {
+                String locationName = resultSet.getString("location_name");
+                int hiveID = resultSet.getInt("hive_id");
+                if (hiveID == hive.getHiveId()) {
+                    returnLocationForAddedHive = locationName;
+                }
+            }
 
-            }catch(SQLException exception){
-                System.out.println("Error when finding location for added hive" + exception);
-            }return returnLocationForAddedHive;
+        } catch (SQLException exception) {
+            System.out.println("Error when finding location for added hive" + exception);
         }
+        return returnLocationForAddedHive;
+    }
 
 
     //    CREATE METHOD DELETE LOCATION
@@ -154,6 +174,18 @@ returnLocationForAddedHive = locationName;
         } catch (SQLException exception) {
             System.out.println("Error inserting into  locations table " + exception);
         }
+    }
+
+    //    CREATE METHOD DELETE COLONY
+    public void deleteColony(Colony colony) {
+        try {
+            sqlStatement = "DELETE FROM colonies WHERE hive_id = '" + colony.getHiveId() + "'";
+            statement.execute(sqlStatement);
+
+        } catch (SQLException exception) {
+            System.out.println("Error deleting Colony " + exception);
+        }
+
     }
     // PRINT OUT LOCATIONS
 
@@ -394,19 +426,19 @@ returnLocationForAddedHive = locationName;
 
                 int hiveID = resultSet.getInt("hive_id");
                 String locationName = resultSet.getString("location_name");
-                System.out.println(hiveID);
-                System.out.println(locationName);
+//                System.out.println(hiveID);
+//                System.out.println(locationName);
 
                 if (hiveID == hive.getHiveId()) {
-                    System.out.println("hive id" + hiveID);
-                    System.out.println("Location name " + locationName);
+//                    System.out.println("hive id" + hiveID);
+//                    System.out.println("Location name " + locationName);
                     returnloaction = locationName;
-                    System.out.println("Return location is " + returnloaction);
+//                    System.out.println("Return location is " + returnloaction);
                 }
 
 
             }
-            System.out.println("Return location out of while" + returnloaction);
+//            System.out.println("Return location out of while" + returnloaction);
 
         } catch (SQLException exception) {
             System.out.println("Error finding locations for deleted hives" + exception);
@@ -415,7 +447,7 @@ returnLocationForAddedHive = locationName;
 
     }
 
-//    GET INFORMATION FROM HISTORY TABLE ABOUT SPECIFIC DATA
+    //    GET INFORMATION FROM HISTORY TABLE ABOUT SPECIFIC DATA
     public void getInformationFromHistoryTable(History history) {
         try {
             sqlStatement = "Select * FROM histories" +
@@ -434,17 +466,313 @@ returnLocationForAddedHive = locationName;
         }
     }
 
-//        Create method to enter date of next visit in database
-        public void enterNextVisit (Colony colony){
-            try{
-                sqlStatement = "INSERT INTO colonies (next_visit) VALUES ('"+colony.getNextVisit()+"')";
-                statement.execute(sqlStatement);
+    // GET INFORMATION FROM HISTORY TABLE ABOUT LAST VISIT
+    public String getInfoAboutLastVisit(History history) {
+        String lastVisit2 = "";
+//    Select*FROM histories
+//    ORDER BY date_and_time DESC
+//    LIMIT 1
 
-            }catch (SQLException exception) {
-                System.out.println("Error in getting information from history table about specific data " + exception);
+        try {
+            sqlStatement = " Select*FROM histories ORDER BY date_and_time DESC LIMIT 1";
+
+            ResultSet resultSet = statement.executeQuery(sqlStatement);
+
+            String lastVisit = resultSet.getString("date_and_time");
+            char[] lastVisitArray = new char[10];
+            for (int i = 0; i < lastVisitArray.length; i++) {
+                lastVisitArray[i] = lastVisit.charAt(i);
+            }
+            lastVisit2 = new String(lastVisitArray);
+
+
+        } catch (
+                SQLException exception) {
+            System.out.println("Error with getting information about last visit" + exception);
+
+        }
+        return lastVisit2;
+
+    }
+
+// GET ALL ACTIONS YOU HAVE DONE IN LAST VISIT
+
+    public void allActionsInLastVisit(History history) {
+
+        try {
+            sqlStatement = "Select*FROM histories WHERE date_and_time LIKE '%" + getInfoAboutLastVisit(history) + "%'";
+
+            ResultSet resultSet = statement.executeQuery(sqlStatement);
+
+            while (resultSet.next()) {
+                int id = resultSet.getInt("id");
+                String actionDone = resultSet.getString("action_done");
+                String dataAndTime = resultSet.getString("date_and_time");
+                String units = resultSet.getString("unit");
+                System.out.println("Id: " + id + ", Action done: " + actionDone + ", Date and time: " + dataAndTime + ", Units: " + units);
+
+            }
+
+            //Select*FROM histories
+            //WHERE date_and_time LIKE '%06-09-2021%'
+
+        } catch (SQLException exception) {
+            System.out.println("Error in all actions in last visit " + exception);
 
         }
     }
+
+
+    //        Create method to enter date of next visit in database
+    public void enterNextVisit(Colony colony) {
+        try {
+            sqlStatement = "INSERT INTO colonies (next_visit) VALUES ('" + colony.getNextVisit() + "')";
+            statement.execute(sqlStatement);
+
+        } catch (SQLException exception) {
+            System.out.println("Error in getting information from history table about specific data " + exception);
+
+        }
+    }
+
+    //    METHOD TO CREATE COLONY
+    public void createColony(Colony colony) {
+        try {
+            sqlStatement = "INSERT INTO colonies (hive_id,colony_origin,queen_breed,queen_year," +
+                    "supers,frames, bees,brood, honey,pollen,varroa_treatment, food_added,next_visit )" +
+                    "VALUES ( '" + colony.getHiveId() + "','" + colony.getColonyOrigin() + "', " +
+                    "'" + colony.getQueenBreed() + "', '" + colony.getQueenYear() + "'," +
+                    "'" + colony.getNumberOfSupers() + "', '" + colony.getNumberOfFrames() + "'," +
+                    "'" + colony.getNumberOfBees() + "', '" + colony.getNumberOfBrood() + "'," +
+                    "'" + colony.getKgHoney() + "', '" + colony.getPollen() + "'," +
+                    "'" + colony.getVarroaTreatment() + "', '" + colony.getFoodAdded() + "'," +
+                    " '" + colony.getNextVisit() + "' )";
+            statement.execute(sqlStatement);
+
+        } catch (SQLException exception) {
+            System.out.println("Error when creating colony" + exception);
+        }
+    }
+
+    //FIND OUT IF THERE IS COLONY WITH SUCH HIVE ID ALREADY
+    public int thereIsColonyWithThisHiveNr(Colony colony) {
+        int hiveIDForColony = 0;
+        try {
+            sqlStatement = "SELECT hive_id from colonies Where hive_id= '" + colony.getHiveId() + "'";
+            ResultSet resultSet = statement.executeQuery(sqlStatement);
+
+            while (resultSet.next()) {
+                int hiveID = resultSet.getInt("hive_id");
+                hiveIDForColony = hiveID;
+            }
+
+        } catch (SQLException exception) {
+            System.out.println("Error finding out if there is colony with this hive id: " + exception);
+        }
+        return hiveIDForColony;
+    }
+
+    // FIND OUT IF THERE IS HIVE WITH THIS NUMBER
+    public int isThereHiveWithThisNr(Hive hive, Colony colony) {
+
+        int thereIsHive = 0;
+        int hiveID = colony.getHiveId();
+
+        try {
+            sqlStatement = "SELECT hive_id FROM hives Where hive_id= '" + hiveID + "'";
+            ResultSet resultSet = statement.executeQuery(sqlStatement);
+            while (resultSet.next()) {
+                int hiveID2 = resultSet.getInt("hive_id");
+                thereIsHive = hiveID2;
+            }
+
+        } catch (SQLException exception) {
+            System.out.println("Error in if there is hive with this number: " + exception);
+        }
+        return thereIsHive;
+    }
+
+    // COUNT HOW MUCH POLLEN IS IN EACH LOCATION
+    public void countPollenInLocations(Location location, Hive hive, Colony colony) {
+        try {
+            sqlStatement = "SELECT  SUM( colonies.pollen),locations.location_name FROM colonies " +
+                    "JOIN hives " +
+                    "ON colonies.hive_id = hives.hive_id " +
+                    "JOIN locations " +
+                    "ON hives.location_id = locations.location_id " +
+                    "GROUP BY locations.location_name " +
+                    "ORDER BY SUM(colonies.honey)DESC";
+            ResultSet resultSet = statement.executeQuery(sqlStatement);
+            while (resultSet.next()) {
+                String locationName = resultSet.getString("location_name");
+                int sumOfPollen = resultSet.getInt("SUM( colonies.pollen)");
+                System.out.println("There are " + sumOfPollen + " pollen frames in location " + locationName);
+            }
+
+        } catch (SQLException exception) {
+            System.out.println("Error in counting pollen in location: " + exception);
+        }
+    }
+    //    Print information about location names and location_id
+    public void printLocationNameAndLocationId(Location location) {
+        try {
+            sqlStatement = "SELECT location_name, location_id FROM locations";
+            ResultSet resultSet = statement.executeQuery(sqlStatement);
+            System.out.println("Locations: ");
+            while (resultSet.next()) {
+                String locationName = resultSet.getString("location_name");
+                Integer locationId = resultSet.getInt("location_id");
+                System.out.println("Location name: " + locationName + ", location_ID: " + locationId);
+            }
+        } catch (SQLException exception) {
+            System.out.println("Error when printing locations " + exception);
+        }
+    }
+
+    //add colony origin
+    public void attachColonyOrigin(Colony colony){
+        try {
+            sqlStatement = "UPDATE colonies SET colony_origin = " +
+                    "'" + colony.getColonyOrigin() + "' " +
+                    "WHERE hive_id = " +
+                    "'" + colony.getHiveId() + "'";
+            statement.execute(sqlStatement);
+        }catch (SQLException exception){
+            System.out.println("Error adding colony origin " + exception);
+        }
+    }
+    //add queen breed
+    public void attachQueenBreed(Colony colony){
+        try {
+            sqlStatement = "UPDATE colonies SET queen_breed = '" +
+                    "" + colony.getQueenBreed() + "' WHERE hive_id = '" +
+                    "" + colony.getHiveId() + "'";
+            statement.execute(sqlStatement);
+
+        }catch (SQLException exception){
+            System.out.println("Error adding queen's breed " + exception);
+        }
+    }
+    //add queen year
+    public void attachQueenYear(Colony colony){
+        try {
+            sqlStatement = "UPDATE colonies SET queen_year = " +
+                    "'" + colony.getQueenYear() + "'" +
+                    "WHERE hive_id = " +
+                    "'" + colony.getHiveId() + "'";
+            statement.execute(sqlStatement);
+
+        }catch (SQLException exception){
+            System.out.println("Error adding queen's year " + exception);
+        }
+    }
+    //add num of supers
+    public void attachNumOfSupers(Colony colony){
+        try {
+            sqlStatement = "UPDATE colonies SET supers = " +
+                    "'" + colony.getNumberOfSupers() + "' " +
+                    "WHERE hive_id = " +
+                    "'" + colony.getHiveId() + "'";
+            statement.execute(sqlStatement);
+
+        }catch (SQLException exception){
+            System.out.println("Error adding number of supers " + exception);
+        }
+    }
+    //add num of frames
+    public void attachNumOfFrames(Colony colony){
+        try {
+            sqlStatement = "UPDATE colonies SET frames = " +
+                    "'" + colony.getNumberOfFrames() + "' " +
+                    "WHERE hive_id = " +
+                    "'" + colony.getHiveId() + "'";
+            statement.execute(sqlStatement);
+
+        }catch (SQLException exception){
+            System.out.println("Error adding number of frames " + exception);
+        }
+    }
+    //add num of bees
+    public void attachNumOfBees(Colony colony){
+        try {
+            sqlStatement = "UPDATE colonies SET bees = " +
+                    "'" + colony.getNumberOfBees() + "' " +
+                    "WHERE hive_id = " +
+                    "'" + colony.getHiveId() + "'";
+            statement.execute(sqlStatement);
+
+        }catch (SQLException exception){
+            System.out.println("Error adding number of bees " + exception);
+        }
+    }
+    //add num og brood
+    public void attachNumOfBrood(Colony colony){
+        try {
+            sqlStatement = "UPDATE colonies SET brood = " +
+                    "'" + colony.getNumberOfBrood() + "' " +
+                    "WHERE hive_id = " +
+                    "'" + colony.getHiveId() + "'";
+            statement.execute(sqlStatement);
+
+        }catch (SQLException exception){
+            System.out.println("Error adding number of brood " + exception);
+        }
+    }
+    //add kg honey
+    public void attachKgHoney(Colony colony){
+        try {
+            sqlStatement = "UPDATE colonies SET honey = " +
+                    "'" + colony.getKgHoney() + "' " +
+                    "WHERE hive_id = " +
+                    "'" + colony.getHiveId() + "'";
+            statement.execute(sqlStatement);
+
+        }catch (SQLException exception){
+            System.out.println("Error adding kg honey " + exception);
+        }
+    }
+    //add pollen
+    public void attachPollen(Colony colony){
+        try {
+            sqlStatement = "UPDATE colonies SET pollen = " +
+                    "'" + colony.getPollen() + "' " +
+                    "WHERE hive_id = " +
+                    "'" + colony.getHiveId() + "'";
+            statement.execute(sqlStatement);
+
+        }catch (SQLException exception){
+            System.out.println("Error adding pollen " + exception);
+        }
+    }
+    //add varroa treatment
+    public void attachVarroaTreatment(Colony colony){
+        try {
+            sqlStatement = "UPDATE colonies SET varroa_treatment = " +
+                    "'" + colony.getVarroaTreatment() + "' " +
+                    "WHERE hive_id = " +
+                    "'" + colony.getHiveId() + "'";
+            statement.execute(sqlStatement);
+
+        }catch (SQLException exception){
+            System.out.println("Error adding varroa treatment " + exception);
+        }
+    }
+    //add food added
+    public void attachFoodAdded(Colony colony){
+        try {
+            sqlStatement = "UPDATE colonies SET food_added = " +
+                    "'" + colony.getFoodAdded() + "' " +
+                    "WHERE hive_id = " +
+                    "'" + colony.getHiveId() + "'";
+            statement.execute(sqlStatement);
+
+        }catch (SQLException exception){
+            System.out.println("Error adding food " + exception);
+        }
+    }
+
+
+
 }
 
 
